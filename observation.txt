@@ -3,3 +3,9 @@
 - All the data manipulation should be stored into one data-manipulation.R script
   > In this one, you make your data manipulation process
   > You save the ouput as a final_data.csv and it's this dataset you call in the app script
+- you are creating some sub dataset (eg. product_perfomance, regional_sales,..) in the the data manipulation
+process but then you don't use them in the app. And you also redefine them in the server in each sub plot server.
+You don't need to do the operation twice. Better to save each sub-dataset as an output.csv in the data folder and
+then call them in the app script using rio::import()
+
+- Try to make one or two plots works correctly first instead of trying to implement all the plots/leaflet/ect.
