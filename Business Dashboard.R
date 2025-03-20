@@ -12,6 +12,7 @@ library(reactable)
 
   
   # Load dataset dataset
+data <- online_retail
   summary(online_retail)
   str(online_retail)
   print(online_retail)
@@ -99,7 +100,7 @@ server <- function(input, output, session) {
       hc_title(text = "Top Selling Products")
   })
   
-  # Regional Sales Leaflet (Updated with USA, UK, Nigeria)
+  # Regional Sales Leaflet (with USA, UK, Nigeria)
   output$regional_sales <- renderLeaflet({
     # Coordinates for USA, UK, and Nigeria
     country_coords <- data.frame(
@@ -109,7 +110,7 @@ server <- function(input, output, session) {
     )
     
     country_sales <- cleaned_data %>%
-      filter(Country %in% c("USA", "UK", "Nigeria")) %>% # Filter to only these countries
+      filter(Country %in% c("USA", "UK", "Nigeria")) %>% 
       group_by(Country) %>%
       summarize(TotalSales = sum(Revenue)) %>%
       left_join(country_coords, by = "Country")
@@ -119,7 +120,7 @@ server <- function(input, output, session) {
       addCircleMarkers(
         lat = ~Latitude,
         lng = ~Longitude,
-        radius = ~TotalSales / 100000, # Adjust divisor based on your data scale
+        radius = ~TotalSales / 100000,
         popup = ~paste(Country, ": $", TotalSales)
       )
   })
