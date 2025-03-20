@@ -1,3 +1,6 @@
+
+# Library -----------------------------------------------------------------
+
 library(shiny)
 library(dplyr)
 library(DT)
@@ -10,46 +13,17 @@ library(lubridate)
 library(highcharter)
 library(reactable)
 
-  
-  # Load dataset dataset
-  summary(online_retail)
-  str(online_retail)
-  print(online_retail)
-  
-  # Rename column
-  colnames(cleaned_data)[which(colnames(cleaned_data) == "Price")] <- "UnitPrice"
-  colnames(cleaned_data)[which(colnames(cleaned_data) == "Invoice")] <- "InvoiceNo"
-  
-  # Data cleaning and processing
-  cleaned_data <- online_retail %>%
-    na.omit() %>%
-    rename(UnitPrice = Price, InvoiceNo = Invoice) %>%
-    mutate(Revenue = Quantity * UnitPrice,
-           InvoiceDate = as.Date(InvoiceDate))
-  
-  # Pre-compute summaries
-  sales_trend <- cleaned_data %>%
-    group_by(month = floor_date(InvoiceDate, "month")) %>%
-    summarise(TotalRevenue = sum(Revenue))
-  
-  regional_sales <- cleaned_data %>%
-    group_by(Country) %>%
-    summarise(TotalRevenue = sum(Revenue)) %>%
-    arrange(desc(TotalRevenue))
-  
-  customer_behaviour <- cleaned_data %>%
-    group_by(`Customer ID`, Country, StockCode) %>%
-    summarise(TotalRevenue = sum(Revenue),
-              PurchaseFrequency = n()) %>%
-    arrange(desc(TotalRevenue))
-  
-  product_performance <- cleaned_data %>%
-    group_by(StockCode, Description) %>%
-    summarise(TotalRevenue = sum(Revenue),
-              TotalQuantity = sum(Quantity)) %>%
-    arrange(desc(TotalRevenue))
 
-# UI definition
+# Import Data -------------------------------------------------------------
+
+cleaned_data <- rio::import("data/cleaned_data.csv")
+sales_trend <- rio::import("data/sales_trend.csv")
+regional_sales <- rio::import("data/regional_sales.csv")
+customer_behaviour <- rio::import("data/customer_behaviour.csv")
+product_performance <- rio::import("data/product_performance.csv")
+
+# Ui ----------------------------------------------------------------------
+
 ui <- fluidPage(
   theme = bs_theme(version = 5, bootswatch = "minty"),
   navbarPage(
@@ -61,6 +35,9 @@ ui <- fluidPage(
     tabPanel("Customer Insights", reactableOutput("customer_insights"))
   )
 )
+
+
+# Server ------------------------------------------------------------------
 
 # Server logic
 server <- function(input, output, session) {

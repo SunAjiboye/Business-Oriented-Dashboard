@@ -1,0 +1,5 @@
+- renv is not defined
+- you don't call your data at the top of your app script
+- All the data manipulation should be stored into one data-manipulation.R script
+  > In this one, you make your data manipulation process
+  > You save the ouput as a final_data.csv and it's this dataset you call in the app script
